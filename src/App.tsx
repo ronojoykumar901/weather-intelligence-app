@@ -129,7 +129,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#0F1115] text-[#E2E8F0] flex flex-col selection:bg-blue-500/30" id="main-container">
       {/* Top Header Section */}
-      <header className="bg-[#0F1115] border-b border-[#2D333E] py-5 px-4 sm:px-8 relative z-10" id="app-header">
+      <header className="bg-[#0F1115] border-b border-[#2D333E] py-5 px-4 sm:px-8 relative z-50" id="app-header">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           
           {/* Logo Brand Grid */}

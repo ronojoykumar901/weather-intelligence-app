@@ -100,7 +100,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto" id="search-bar-container" ref={dropdownRef}>
+    <div className="w-full max-w-2xl mx-auto relative" id="search-bar-container" ref={dropdownRef}>
       <form onSubmit={handleSubmit} className="relative z-20">
         <div className="relative">
           <input
