@@ -12,6 +12,178 @@ import {
 import { WeatherData } from '../types';
 import { getWeatherDetails, getWeatherIcon } from '../utils/weatherCodes';
 
+interface AnimatedWeatherIconProps {
+  iconName: string;
+  WeatherIcon: React.ComponentType<any>;
+  iconColor: string;
+}
+
+const AnimatedWeatherIcon: React.FC<AnimatedWeatherIconProps> = ({ iconName, WeatherIcon, iconColor }) => {
+  const baseClass = `w-10 h-10 sm:w-12 sm:h-12 ${iconColor}`;
+
+  if (iconName === "Sun") {
+    return (
+      <div className="relative flex items-center justify-center">
+        {/* Glow halo behind the sun */}
+        <motion.div 
+          className="absolute w-12 h-12 bg-amber-400/25 rounded-full blur-md"
+          animate={{ scale: [0.95, 1.25, 0.95], opacity: [0.4, 0.8, 0.4] }}
+          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+        >
+          <WeatherIcon className={baseClass} />
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (iconName === "CloudSun") {
+    return (
+      <div className="relative flex items-center justify-center">
+        {/* Sun glow animation peaking behind the cloud */}
+        <motion.div 
+          className="absolute -top-1 -right-1 w-6 h-6 bg-amber-400/20 rounded-full blur-sm"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.9, 0.5] }}
+          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        />
+        <motion.div
+          animate={{ y: [0, -2, 0] }}
+          transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+        >
+          <WeatherIcon className={baseClass} />
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (iconName === "Cloud") {
+    return (
+      <motion.div
+        animate={{ y: [0, -3, 0] }}
+        transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+      >
+        <WeatherIcon className={baseClass} />
+      </motion.div>
+    );
+  }
+
+  if (iconName === "CloudFog") {
+    return (
+      <motion.div
+        animate={{ 
+          x: [-2.5, 2.5, -2.5],
+          opacity: [0.85, 1, 0.85] 
+        }}
+        transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
+      >
+        <WeatherIcon className={baseClass} />
+      </motion.div>
+    );
+  }
+
+  if (iconName === "CloudDrizzle" || iconName === "CloudRain") {
+    const dropCount = iconName === "CloudRain" ? 3 : 2;
+    return (
+      <div className="relative flex flex-col items-center justify-center">
+        <motion.div
+          animate={{ y: [0, -2, 0] }}
+          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        >
+          <WeatherIcon className={baseClass} />
+        </motion.div>
+        
+        {/* Shimmering, falling raindrop lines */}
+        <div className="absolute inset-x-0 bottom-[-8px] flex justify-center gap-2.5 overflow-hidden pointer-events-none h-4">
+          {Array.from({ length: dropCount }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="w-[1.5px] h-2.5 bg-blue-400 rounded-full"
+              initial={{ y: -8, opacity: 0 }}
+              animate={{ y: 8, opacity: [0, 1, 0] }}
+              transition={{
+                repeat: Infinity,
+                duration: 1.1 + i * 0.15,
+                delay: i * 0.3,
+                ease: "linear"
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (iconName === "CloudSnow" || iconName === "Snowflake") {
+    return (
+      <div className="relative flex flex-col items-center justify-center">
+        <motion.div
+          animate={{ y: [0, -1.5, 0] }}
+          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+        >
+          <WeatherIcon className={baseClass} />
+        </motion.div>
+        
+        {/* Falling and drifting snowflakes */}
+        <div className="absolute inset-x-0 bottom-[-6px] flex justify-center gap-3 overflow-hidden pointer-events-none h-3">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="w-1 h-1 bg-sky-200 rounded-full"
+              initial={{ y: -6, opacity: 0 }}
+              animate={{ 
+                y: 6, 
+                opacity: [0, 1, 0],
+                x: i % 2 === 0 ? [-1.5, 1.5, -1.5] : [1.5, -1.5, 1.5]
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: 2.2 + i * 0.3,
+                delay: i * 0.5,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (iconName === "CloudLightning") {
+    return (
+      <div className="relative flex items-center justify-center">
+        <motion.div
+          animate={{ 
+            scale: [1, 1.06, 0.97, 1.06, 1],
+            filter: ["brightness(1)", "brightness(1.3)", "brightness(0.9)", "brightness(1.35)", "brightness(1)"]
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 4.5, 
+            repeatType: "reverse",
+            ease: "easeInOut",
+            times: [0, 0.44, 0.47, 0.51, 1] 
+          }}
+        >
+          <WeatherIcon className={baseClass} />
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Fallback / default gentle floating animation
+  return (
+    <motion.div
+      animate={{ y: [0, -2, 0] }}
+      transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+    >
+      <WeatherIcon className={baseClass} />
+    </motion.div>
+  );
+};
+
 interface CurrentWeatherProps {
   location: { name: string; country: string; admin1?: string };
   weatherData: WeatherData;
@@ -100,8 +272,12 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
           </div>
 
           <div className="flex items-center gap-4 sm:gap-6">
-            <div className={`p-4 bg-white/5 rounded-3xl backdrop-blur-md border border-white/10 ${details.iconColor} flex items-center justify-center shrink-0`}>
-              <WeatherIcon className="w-10 h-10 sm:w-12 sm:h-12" />
+            <div className="p-4 bg-white/5 rounded-3xl backdrop-blur-md border border-white/10 flex items-center justify-center shrink-0">
+              <AnimatedWeatherIcon 
+                iconName={details.iconName} 
+                WeatherIcon={WeatherIcon} 
+                iconColor={details.iconColor} 
+              />
             </div>
             <div>
               <div id="current-temp" className="text-4xl sm:text-5.5xl font-black text-white tracking-tighter leading-none">
